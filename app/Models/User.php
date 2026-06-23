@@ -2,31 +2,90 @@
 
 namespace App\Models;
 
-// use Illuminate\Contracts\Auth\MustVerifyEmail;
-use Database\Factories\UserFactory;
-use Illuminate\Database\Eloquent\Attributes\Fillable;
-use Illuminate\Database\Eloquent\Attributes\Hidden;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Laravel\Sanctum\HasApiTokens;
 
-#[Fillable(['name', 'email', 'password'])]
-#[Hidden(['password', 'remember_token'])]
 class User extends Authenticatable
 {
-    /** @use HasFactory<UserFactory> */
-    use HasFactory, Notifiable;
+    use HasApiTokens, Notifiable;
 
-    /**
-     * Get the attributes that should be cast.
-     *
-     * @return array<string, string>
-     */
-    protected function casts(): array
+    protected $fillable = [
+        'school_id',
+        'name',
+        'email',
+        'password',
+        'role',
+        'status',
+    ];
+
+    protected $hidden = [
+        'password',
+        'remember_token',
+    ];
+
+    protected $casts = [
+        'email_verified_at' => 'datetime',
+        'password' => 'hashed',
+    ];
+
+    public function school()
     {
-        return [
-            'email_verified_at' => 'datetime',
-            'password' => 'hashed',
-        ];
+        return $this->belongsTo(School::class);
+    }
+
+    public function createdInterclasses()
+    {
+        return $this->hasMany(Interclass::class, 'created_by');
+    }
+
+    public function createdTeams()
+    {
+        return $this->hasMany(Team::class, 'created_by');
+    }
+
+    public function moderatorModalities()
+    {
+        return $this->hasMany(ModeratorModality::class);
+    }
+
+    public function generatedBrackets()
+    {
+        return $this->hasMany(Bracket::class, 'generated_by');
+    }
+
+    public function registeredMatches()
+    {
+        return $this->hasMany(GameMatch::class, 'registered_by');
+    }
+
+    public function approvedMatches()
+    {
+        return $this->hasMany(GameMatch::class, 'approved_by');
+    }
+
+    public function registeredPenalties()
+    {
+        return $this->hasMany(Penalty::class, 'registered_by');
+    }
+
+    public function approvedPenalties()
+    {
+        return $this->hasMany(Penalty::class, 'approved_by');
+    }
+
+    public function isPlatformAdmin(): bool
+    {
+        return $this->role === 'platform_admin';
+    }
+
+    public function isSchoolManager(): bool
+    {
+        return $this->role === 'school_manager';
+    }
+
+    public function isModerator(): bool
+    {
+        return $this->role === 'moderator';
     }
 }
