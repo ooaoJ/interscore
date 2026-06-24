@@ -13,6 +13,6 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/logout', [AuthController::class, 'logout']);
 
     Route::middleware('role:platform_admin')->group(function () {
-       Route::get('/schools', [SchoolController::class, 'index']);
+       Route::apiResource('schools', SchoolController::class);
     });
 });
