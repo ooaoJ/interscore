@@ -6,6 +6,7 @@ use App\Http\Controllers\Api\UserController;
 use App\Http\Controllers\Api\InterclassController;
 use App\Http\Controllers\Api\ClassroomController;
 use App\Http\Controllers\Api\StudentController;
+use App\Http\Controllers\Api\ModalityController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -38,5 +39,14 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::get('/students/{student}', [StudentController::class, 'show']);
         Route::put('/students/{student}', [StudentController::class, 'update']);
         Route::delete('/students/{student}', [StudentController::class, 'destroy']);
+
+        // ModalityController
+        Route::get('/sports', [ModalityController::class, 'sports']);
+        Route::get('/competition-categories', [ModalityController::class, 'categories']);
+        Route::get('/interclasses/{interclass}/modalities', [ModalityController::class, 'index']);
+        Route::post('/interclasses/{interclass}/modalities', [ModalityController::class, 'store']);
+        Route::get('/modalities/{modality}', [ModalityController::class, 'show']);
+        Route::put('/modalities/{modality}', [ModalityController::class, 'update']);
+        Route::delete('/modalities/{modality}', [ModalityController::class, 'destroy']);
     });
 });
