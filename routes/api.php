@@ -5,6 +5,7 @@ use App\Http\Controllers\Api\SchoolController;
 use App\Http\Controllers\Api\UserController;
 use App\Http\Controllers\Api\InterclassController;
 use App\Http\Controllers\Api\ClassroomController;
+use App\Http\Controllers\Api\StudentController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -20,15 +21,22 @@ Route::middleware('auth:sanctum')->group(function () {
     });
 
     Route::middleware('role:platform_admin,school_manager')->group(function() {
+        // InterclassController
         Route::apiResource('interclasses', InterclassController::class);
 
+        // ClassroomController
         Route::get('/grades', [ClassroomController::class, 'grades']);
-
         Route::get('/interclasses/{interclass}/classrooms', [ClassroomController::class, 'index']);
         Route::post('/interclasses/{interclass}/classrooms', [ClassroomController::class, 'store']);
-
         Route::get('/classrooms/{classroom}', [ClassroomController::class, 'show']);
         Route::put('/classrooms/{classroom}', [ClassroomController::class, 'update']);
         Route::delete('/classrooms/{classroom}', [ClassroomController::class, 'destroy']);
+
+        // StudentController
+        Route::get('/classrooms/{classroom}/students', [StudentController::class, 'index']);
+        Route::post('/classrooms/{classroom}/students', [StudentController::class, 'store']);
+        Route::get('/students/{student}', [StudentController::class, 'show']);
+        Route::put('/students/{student}', [StudentController::class, 'update']);
+        Route::delete('/students/{student}', [StudentController::class, 'destroy']);
     });
 });
