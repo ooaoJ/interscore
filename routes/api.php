@@ -8,6 +8,7 @@ use App\Http\Controllers\Api\ClassroomController;
 use App\Http\Controllers\Api\StudentController;
 use App\Http\Controllers\Api\ModalityController;
 use App\Http\Controllers\Api\TeamController;
+use App\Http\Controllers\Api\ModeratorController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -61,6 +62,14 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::put('/teams/{team}', [TeamController::class, 'update']);
         Route::delete('/teams/{team}', [TeamController::class, 'destroy']);
 
-        
+        // ModeratorController
+        Route::get('/interclasses/{interclass}/moderators', [ModeratorController::class, 'index']);
+        Route::post('/modalities/{modality}/moderators', [ModeratorController::class, 'store']);
+        Route::delete('/moderator-modalities/{moderatorModality}', [ModeratorController::class, 'destroy']);
+    });
+    
+    // For moderators only
+    Route::middleware('role:moderator')->group(function() {
+        Route::get('/my-modalities', [ModeratorController::class, 'myModalities']);
     });
 });
